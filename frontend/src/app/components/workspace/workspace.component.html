@@ -1,0 +1,20 @@
+<div id="header">
+    <app-header></app-header>
+</div>
+
+<div id="body">
+    <dx-drawer
+            [closeOnOutsideClick]=false
+            [opened]="getDrawerOpen()"
+            openedStateMode="shrink"
+            position="right"
+            revealMode="slide"
+            template="template"
+    >
+        <app-diagram></app-diagram>
+        <div *dxTemplate="let data of 'template'" class="title">
+            <p id="drawer-title"><b>JSON configuration</b></p>
+            <app-drawer-content></app-drawer-content>
+        </div>
+    </dx-drawer>
+</div>
