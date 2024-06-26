@@ -27,7 +27,7 @@ import {
 } from "devextreme-angular";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DrawerContentComponent} from './components/drawer-content/drawer-content.component';
-import {HttpClientModule} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {JsonPipe, TitleCasePipe} from "@angular/common";
 import {Clipboard} from "@angular/cdk/clipboard";
 
@@ -40,8 +40,7 @@ import {Clipboard} from "@angular/cdk/clipboard";
     DiagramComponent,
     DrawerContentComponent,
   ],
-  imports: [
-    BrowserModule,
+  bootstrap: [AppComponent], imports: [BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     DxButtonModule,
@@ -59,15 +58,12 @@ import {Clipboard} from "@angular/cdk/clipboard";
     DxNumberBoxModule,
     DxSelectBoxModule,
     DxCheckBoxModule,
-    HttpClientModule,
-    DxDataGridModule,
-  ],
-  providers: [
+    DxDataGridModule], providers: [
     JsonPipe,
     TitleCasePipe,
-    Clipboard
-  ],
-  bootstrap: [AppComponent]
+    Clipboard,
+    provideHttpClient(withInterceptorsFromDi())
+  ]
 })
 export class AppModule {
 }
