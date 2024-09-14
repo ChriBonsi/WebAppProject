@@ -30,6 +30,8 @@ import {DrawerContentComponent} from './components/drawer-content/drawer-content
 import {HttpClientModule} from '@angular/common/http';
 import {JsonPipe, TitleCasePipe} from "@angular/common";
 import {Clipboard} from "@angular/cdk/clipboard";
+import {LoginComponent} from "./components/login/login.component";
+import {RegisterComponent} from "./components/register/register.component";
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import {Clipboard} from "@angular/cdk/clipboard";
     HeaderComponent,
     WorkspaceComponent,
     DiagramComponent,
+    LoginComponent,
     DrawerContentComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
