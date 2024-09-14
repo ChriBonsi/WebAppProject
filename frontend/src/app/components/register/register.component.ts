@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import {Component} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -12,10 +12,11 @@ export class RegisterComponent {
   password: string = '';
   errorMessage: string = '';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {
+  }
 
   onSubmit() {
-    const registerData = { username: this.username, password: this.password };
+    const registerData = {username: this.username, password: this.password};
 
     this.http.post<any>('http://127.0.0.1:5000/register', registerData).subscribe(
       response => {

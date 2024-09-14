@@ -1,14 +1,14 @@
 <div class="register-container">
-    <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+    <form #registerForm="ngForm" (ngSubmit)="onSubmit()">
         <div>
             <label for="username">Username:</label>
-            <input type="text" id="username" required [(ngModel)]="username" name="username">
+            <input [(ngModel)]="username" id="username" name="username" required type="text">
         </div>
         <div>
             <label for="password">Password:</label>
-            <input type="password" id="password" required [(ngModel)]="password" name="password">
+            <input [(ngModel)]="password" id="password" name="password" required type="password">
         </div>
-        <button type="submit" [disabled]="!registerForm.form.valid">Register</button>
+        <button [disabled]="!registerForm.form.valid" type="submit">Register</button>
     </form>
     <div *ngIf="errorMessage">{{ errorMessage }}</div>
 </div>

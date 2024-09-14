@@ -1,14 +1,14 @@
 <div class="login-container">
-    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit()">
         <div>
             <label for="username">Username:</label>
-            <input type="text" id="username" required [(ngModel)]="username" name="username">
+            <input [(ngModel)]="username" id="username" name="username" required type="text">
         </div>
         <div>
             <label for="password">Password:</label>
-            <input type="password" id="password" required [(ngModel)]="password" name="password">
+            <input [(ngModel)]="password" id="password" name="password" required type="password">
         </div>
-        <button type="submit" [disabled]="!loginForm.form.valid">Login</button>
+        <button [disabled]="!loginForm.form.valid" type="submit">Login</button>
     </form>
     <div *ngIf="errorMessage">{{ errorMessage }}</div>
 </div>
