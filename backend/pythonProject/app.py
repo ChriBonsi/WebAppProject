@@ -2,11 +2,13 @@ import datetime
 
 import jwt
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Configurazione dell'app
 app = Flask(__name__)
+CORS(app)  # Abilita CORS per tutte le rotte
 app.config['SECRET_KEY'] = 'your_secret_key'  # Cambia questa chiave in produzione
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:db_password@localhost:5432/webapp'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -83,10 +85,8 @@ def login():
         return jsonify({"message": "Invalid username or password"}), 401
 
     # Genera il token JWT
-    token = jwt.encode({
-        'user_id': user.id,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
-    }, app.config['SECRET_KEY'], algorithm="HS256")
+    token = jwt.encode({'user_id': user.id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
+        app.config['SECRET_KEY'], algorithm="HS256")
 
     return jsonify({'token': token}), 200
 
@@ -110,4 +110,4 @@ if __name__ == '__main__':
         db.create_all()  # Crea le tabelle se non esistono già
     app.run(debug=True)
 
-# TODOD implementare hash delle password
+# TODO implementare hash delle password
