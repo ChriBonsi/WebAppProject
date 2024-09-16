@@ -25,7 +25,7 @@ export class LoginComponent {
         this.router.navigate(['/']);
       },
       error => {
-        this.errorMessage = 'Invalid username or password';
+        this.errorMessage = 'Combination of username and password is incorrect';
       }
     );
   }
