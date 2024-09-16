@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {ImportServiceService} from "../../services/import-service.service";
 import {Router} from "@angular/router";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-homepage',
@@ -13,7 +14,7 @@ export class HomepageComponent {
     " to start over whenever you want or generate an URL from which to download the generated code for your" +
     " IoT system with the related apps.";
 
-  constructor(private importService: ImportServiceService, private router: Router) {
+  constructor(private importService: ImportServiceService, private router: Router, private authService: AuthService) {
   }
 
   /**
@@ -31,5 +32,9 @@ export class HomepageComponent {
       .catch((error) => {
         alert(error);
       });
+  }
+
+  onLogout() {
+    this.authService.logout();
   }
 }

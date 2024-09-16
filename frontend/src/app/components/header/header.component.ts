@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {ConfigurationService} from "../../services/configuration.service";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-header',
@@ -9,7 +10,7 @@ import {ConfigurationService} from "../../services/configuration.service";
 export class HeaderComponent {
   isModifiable: boolean = false;
 
-  constructor(protected configurationService: ConfigurationService) {
+  constructor(protected configurationService: ConfigurationService, protected authService: AuthService) {
   }
 
   /**
@@ -18,5 +19,10 @@ export class HeaderComponent {
   switchToText() {
     this.isModifiable = false;
     this.configurationService.updateContent();
+  }
+
+  // Metodo per il logout
+  onLogout() {
+    this.authService.logout();
   }
 }

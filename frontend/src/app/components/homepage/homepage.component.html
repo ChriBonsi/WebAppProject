@@ -2,7 +2,7 @@
 
     <div class="logo" id="devq-text-logo">
         <a href="https://www.devq.it/">
-            <img alt="DevQ Logo" src="assets/images/logos/logo-devq.svg">
+            <img alt="DevQ Logo" src="/assets/images/logos/devq-complete.svg">
         </a>
     </div>
 
@@ -30,6 +30,10 @@
         <dx-button (onClick)="jsonInput.click()" class="child-button" icon="folder" id="attachButton"></dx-button>
     </div>
 
+    <div class="logout-button">
+        <dx-button (onClick)="onLogout()" class="child-button" icon="login" id="logoutButton"></dx-button>
+    </div>
+
     <dx-tooltip
             [hideOnOutsideClick]="false"
             hideEvent="mouseleave"
@@ -51,4 +55,13 @@
         </div>
     </dx-tooltip>
 
+    <dx-tooltip
+            [hideOnOutsideClick]="false"
+            hideEvent="mouseleave"
+            showEvent="mouseenter"
+            target="#logoutButton">
+        <div *dxTemplate="let data = data; of: 'content'">
+            <p>Logout</p>
+        </div>
+    </dx-tooltip>
 </div>
