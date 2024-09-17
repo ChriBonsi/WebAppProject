@@ -16,6 +16,22 @@ export class RegisterComponent {
   }
 
   onSubmit() {
+    // Controlli lato client
+    if (!this.username.trim() || !this.password.trim()) {
+      this.errorMessage = 'Username and/or password cannot be empty.';
+      return;
+    }
+
+    if (this.username.length < 3) {
+      this.errorMessage = 'Username must be at least 3 characters long.';
+      return;
+    }
+
+    if (this.password.length < 6) {
+      this.errorMessage = 'Password must be at least 6 characters long.';
+      return;
+    }
+
     const registerData = {username: this.username, password: this.password};
 
     this.http.post<any>('http://127.0.0.1:5000/register', registerData).subscribe(
@@ -24,7 +40,11 @@ export class RegisterComponent {
         this.router.navigate(['/login']);
       },
       error => {
-        this.errorMessage = 'Registration failed. Username might already be taken.';
+        if (error.status === 400 && error.error.message === 'Username already exists') {
+          this.errorMessage = 'Username is already taken.';
+        } else {
+          this.errorMessage = 'Registration failed. Please try again.';
+        }
       }
     );
   }
