@@ -48,11 +48,11 @@ def token_required(f):
 def register():
     data = request.get_json()
 
-    if 'username' not in data or 'password' not in data:
-        return jsonify({"message": "Missing username or password"}), 400
+    if 'username' not in data or not data['username'].strip() or 'password' not in data or not data['password'].strip():
+        return jsonify({"message": "Missing or empty username or password"}), 400
 
-    username = data['username']
-    password = data['password']
+    username = data['username'].strip()
+    password = data['password'].strip()
 
     # Controlla se l'username esiste già
     if User.query.filter_by(username=username).first():
@@ -73,11 +73,11 @@ def register():
 def login():
     data = request.get_json()
 
-    if 'username' not in data or 'password' not in data:
+    if 'username' not in data or not data['username'].strip() or 'password' not in data or not data['password'].strip():
         return jsonify({"message": "Missing username or password"}), 400
 
-    username = data['username']
-    password = data['password']
+    username = data['username'].strip()
+    password = data['password'].strip()
 
     user = User.query.filter_by(username=username).first()
 
@@ -86,7 +86,7 @@ def login():
 
     # Genera il token JWT
     token = jwt.encode({'user_id': user.id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
-        app.config['SECRET_KEY'], algorithm="HS256")
+                       app.config['SECRET_KEY'], algorithm="HS256")
 
     return jsonify({'token': token}), 200
 
