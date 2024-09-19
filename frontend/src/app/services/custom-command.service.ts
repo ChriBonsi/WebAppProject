@@ -3,10 +3,8 @@ import {ToggleService} from "./toggle.service";
 import {ConfigurationService} from "./configuration.service";
 import {JsonDownloadService} from "./json-download.service";
 import ArrayStore from "devextreme/data/array_store";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {environment} from "../../environments/environments";
+import {HttpClient} from "@angular/common/http";
 import {ToastNotificationService} from "./toast-notification.service";
-import {lastValueFrom} from "rxjs";
 import {Clipboard} from "@angular/cdk/clipboard";
 
 @Injectable({
@@ -43,32 +41,34 @@ export class CustomCommandService {
       this.notificationService.displayToast("Generating code...", 230,
         "#toast-container", "info", 2000);
 
-      const jsonFile = this.configService.exportConfiguration();
-      this.generateCode(jsonFile).then(
-        (data: any) => {
-          console.log('Response:', data);
-          const responseData = data.url;
+      /*
+            const jsonFile = this.configService.exportConfiguration();
+            this.generateCode(jsonFile).then(
+              (data: any) => {
+                console.log('Response:', data);
+                const responseData = data.url;
 
-          if (typeof responseData === 'string') {
-            if (this.clipboard.copy(responseData)) {
-              this.notificationService.displayToast("The code has been generated successfully and the" +
-                " URL to download it has been copied into your clipboard!", 370,
-                "#toast-container", "success", 4000);
-            }
-          } else {
-            this.notificationService.displayToast("Unknown Error", 230,
-              "#toast-container", "error", 3000);
-          }
+                if (typeof responseData === 'string') {
+                  if (this.clipboard.copy(responseData)) {
+                    this.notificationService.displayToast("The code has been generated successfully and the" +
+                      " URL to download it has been copied into your clipboard!", 370,
+                      "#toast-container", "success", 4000);
+                  }
+                } else {
+                  this.notificationService.displayToast("Unknown Error", 230,
+                    "#toast-container", "error", 3000);
+                }
 
-        },
-        (error: any) => {
-          this.notificationService.displayToast("Something went wrong, you might want " +
-            "to check your configuration...", 300,
-            "#toast-container", "warning", 4000);
+              },
+              (error: any) => {
+                this.notificationService.displayToast("Something went wrong, you might want " +
+                  "to check your configuration...", 300,
+                  "#toast-container", "warning", 4000);
 
-          console.error('Error:', error);
-        }
-      );
+                console.error('Error:', error);
+              }
+            );
+      */
     }
   }
 
@@ -79,13 +79,13 @@ export class CustomCommandService {
     this.jsonDownload.downloadJson();
   }
 
-  private async generateCode(jsonFile: any): Promise<any> {
-    const apiURL = `${environment.baseUrl}/download`;
+  /*  private async generateCode(jsonFile: any): Promise<any> {
+      const apiURL = `${environment.baseUrl}/download`;
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json' // Set the content type based on your API requirements
-    });
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json' // Set the content type based on your API requirements
+      });
 
-    return await lastValueFrom(this.httpClient.post(apiURL, jsonFile, {headers}));
-  }
+      return await lastValueFrom(this.httpClient.post(apiURL, jsonFile, {headers}));
+    }*/
 }
