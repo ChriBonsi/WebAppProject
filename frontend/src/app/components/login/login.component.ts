@@ -19,8 +19,15 @@ export class LoginComponent {
   constructor(private http: HttpClient, private router: Router) {
   }
 
+  sanitizeInput(input: string): string {
+    return input.replace(/[^a-zA-Z0-9_.-]/g, '');  // Solo lettere, numeri, underscore, punti e trattini
+  }
+
   onSubmit() {
-    const loginData = {username: this.username, password: this.password};
+    const sanitizedUsername = this.sanitizeInput(this.username);
+    const sanitizedPassword = this.sanitizeInput(this.password);
+
+    const loginData = {username: sanitizedUsername, password: sanitizedPassword};
 
     this.http.post<any>('http://127.0.0.1:5000/login', loginData).subscribe(
       response => {

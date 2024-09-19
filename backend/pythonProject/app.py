@@ -1,4 +1,6 @@
 import datetime
+import re
+from functools import wraps
 
 import jwt
 from flask import Flask, request, jsonify
@@ -26,16 +28,21 @@ class User(db.Model):
 
 # Funzione per verificare il token JWT
 def token_required(f):
+    @wraps(f)
     def decorated(*args, **kwargs):
-        token = request.headers.get('x-access-token')
+        token = request.headers.get('Authorization')  # Usa Authorization header
 
         if not token:
             return jsonify({"message": "Token is missing!"}), 401
 
+        token = token.replace("Bearer ", "")  # Rimuove "Bearer" dal token
+
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
             current_user = User.query.filter_by(id=data['user_id']).first()
-        except:
+        except jwt.ExpiredSignatureError:
+            return jsonify({"message": "Token has expired!"}), 401
+        except jwt.InvalidTokenError:
             return jsonify({"message": "Token is invalid!"}), 401
 
         return f(current_user, *args, **kwargs)
@@ -43,16 +50,31 @@ def token_required(f):
     return decorated
 
 
+# Funzione per validare input
+def validate_input(username, password):
+    if not re.match("^[a-zA-Z0-9_.-]+$", username):
+        return "Invalid username format. Only alphanumeric characters, dots, underscores, and hyphens are allowed."
+    if len(password) < 6:
+        return "Password must be at least 6 characters long."
+    return None
+
+
 # Rotta per la registrazione
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
 
+    # Controllo se mancano campi o sono vuoti
     if 'username' not in data or not data['username'].strip() or 'password' not in data or not data['password'].strip():
         return jsonify({"message": "Missing or empty username or password"}), 400
 
     username = data['username'].strip()
     password = data['password'].strip()
+
+    # Validazione lato server
+    validation_error = validate_input(username, password)
+    if validation_error:
+        return jsonify({"message": validation_error}), 400
 
     # Controlla se l'username esiste già
     if User.query.filter_by(username=username).first():
@@ -73,18 +95,24 @@ def register():
 def login():
     data = request.get_json()
 
+    # Controllo se mancano campi o sono vuoti
     if 'username' not in data or not data['username'].strip() or 'password' not in data or not data['password'].strip():
         return jsonify({"message": "Missing username or password"}), 400
 
     username = data['username'].strip()
     password = data['password'].strip()
 
+    # Validazione lato server
+    validation_error = validate_input(username, password)
+    if validation_error:
+        return jsonify({"message": validation_error}), 400
+
     user = User.query.filter_by(username=username).first()
 
     if not user or not check_password_hash(user.password, password):
         return jsonify({"message": "Invalid username or password"}), 401
 
-    # Genera il token JWT
+    # Genera il token JWT con durata 30 minuti
     token = jwt.encode({'user_id': user.id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
                        app.config['SECRET_KEY'], algorithm="HS256")
 
@@ -98,10 +126,9 @@ def protected(current_user):
     return jsonify({"message": f"Welcome {current_user.username}! This is a protected route."})
 
 
-# Rotta per il logout
+# Rotta per il logout (per cancellare il token lato client)
 @app.route('/logout', methods=['POST'])
 def logout():
-    # Implementa la logica di logout, ad esempio invalidando il token JWT
     return jsonify({"message": "Logout successful"}), 200
 
 
@@ -109,5 +136,3 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()  # Crea le tabelle se non esistono già
     app.run(debug=True)
-
-# TODO implementare hash delle password
