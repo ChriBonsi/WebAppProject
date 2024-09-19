@@ -11,8 +11,13 @@ export class RegisterComponent {
   username: string = '';
   password: string = '';
   errorMessage: string = '';
+  showPassword: boolean = false;  // Variabile per mostrare/nascondere la password
 
   constructor(private http: HttpClient, private router: Router) {
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
   onSubmit() {

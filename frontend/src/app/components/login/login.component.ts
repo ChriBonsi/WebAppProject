@@ -12,6 +12,10 @@ export class LoginComponent {
   password: string = '';
   errorMessage: string = '';
 
+  // Variabili per la visibilità della password
+  showPassword: boolean = false;
+  passwordFieldType: string = 'password';
+
   constructor(private http: HttpClient, private router: Router) {
   }
 
@@ -28,5 +32,11 @@ export class LoginComponent {
         this.errorMessage = 'Combination of username and password is incorrect';
       }
     );
+  }
+
+  // Funzione per cambiare la visibilità della password
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+    this.passwordFieldType = this.showPassword ? 'text' : 'password';
   }
 }
