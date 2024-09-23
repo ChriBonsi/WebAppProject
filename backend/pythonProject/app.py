@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 # Configurazione dell'app
 app = Flask(__name__)
-CORS(app)  # Abilita CORS per tutte le rotte
+CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}})
 app.config['SECRET_KEY'] = 'your_secret_key'  # Cambia questa chiave in produzione
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:db_password@localhost:5432/webapp'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -113,7 +113,7 @@ def login():
     if not check_password_hash(user.password, password):
         user.failed_login_attempts += 1
         if user.failed_login_attempts >= 5:
-            user.account_locked_until = datetime.datetime.utcnow() + datetime.timedelta(minutes=15)
+            user.account_locked_until = datetime.datetime.now() + datetime.timedelta(minutes=15)
         db.session.commit()
         return jsonify({"message": "Invalid username or password"}), 401
 
