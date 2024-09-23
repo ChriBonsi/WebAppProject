@@ -81,7 +81,7 @@ def register():
 
 def is_account_locked(user):
     if user.account_locked_until:
-        if datetime.datetime.utcnow() < user.account_locked_until:
+        if datetime.datetime.now() < user.account_locked_until:
             return True
         else:
             # Sblocca l'account se il tempo è trascorso
@@ -107,9 +107,17 @@ def login():
     if not user:
         return jsonify({"message": "Invalid username or password"}), 401
 
-    if is_account_locked(user):
+    # Controlla se l'account è bloccato
+    if user.account_locked_until and datetime.datetime.now() < user.account_locked_until:
         return jsonify({"message": "Account is temporarily locked due to multiple failed login attempts."}), 403
 
+    # Se il tempo di blocco è trascorso, sblocca l'account
+    if user.account_locked_until and datetime.datetime.now() >= user.account_locked_until:
+        user.failed_login_attempts = 0
+        user.account_locked_until = None
+        db.session.commit()
+
+    # Verifica la password
     if not check_password_hash(user.password, password):
         user.failed_login_attempts += 1
         if user.failed_login_attempts >= 5:
@@ -123,7 +131,7 @@ def login():
     db.session.commit()
 
     # Genera il token JWT
-    token = jwt.encode({'user_id': user.id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
+    token = jwt.encode({'user_id': user.id, 'exp': datetime.datetime.now() + datetime.timedelta(minutes=30)},
                        app.config['SECRET_KEY'], algorithm="HS256")
 
     return jsonify({'token': token}), 200
